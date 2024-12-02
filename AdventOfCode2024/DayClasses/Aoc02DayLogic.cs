@@ -81,59 +81,61 @@ namespace AdventOfCode2024.DayClasses
         {
             var reader = new SplitIntMultiArrayFileReader();
             var reports = reader.GetReadableFileContent(file, isBenchmark);
+            int result = 0;
+            List<int> temp;
+            foreach (var report in reports)
+            {
+                if (ValidateReport(report))
+                {
+                    result++;
+                    continue;
+                }
+                for (int i = 0; i < report.Length; i++)
+                {
+                    temp = report.ToList();
+                    temp.RemoveAt(i);
+                    if (ValidateReport(temp.ToArray()))
+                    {
+                        result++;
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private bool ValidateReport(int[] levels)
+        {
             bool increasing = false;
             bool safe = false;
             int curr;
-            int prev = 0;
             int diff;
-            int result = 0;
-            int errors = 0;
-            foreach (var report in reports)
+            for (int i = 0; i < levels.Length; i++)
             {
-                for (int i = 0; i < report.Length; i++)
+                curr = levels[i];
+                if (i == 0)
                 {
-                    curr = report[i];
-                    if (i == 0)
-                    {
-                        increasing = curr < report[i + 1];
-                        prev = curr;
-                        continue;
-                    }
-                    diff = curr - prev;
-                    if ((diff == 0 || Math.Abs(diff) > 3) || !((increasing && diff > 0) || (!increasing && diff < 0)))
-                    {
-                        if (errors == 0)
-                        {
-                            if (i == 1)
-                            {
-                                increasing = curr < report[i + 1];
-                                if (1 >= Math.Abs(curr - report[i+1]) && Math.Abs(curr - report[i + 1]) <= 3)
-                                {
-                                    prev = curr;
-                                }
-                            }
-
-                            errors++;
-                            continue;
-                        }
-
-                        safe = false;
-                        break;
-                    }
-                    else
-                    {
-                        safe = true;
-                        prev = curr;
-                    }
+                    increasing = curr < levels[i + 1];
+                    continue;
                 }
-                if (safe)
+                diff = curr - levels[i - 1];
+                if (diff == 0 || Math.Abs(diff) > 3)
                 {
-                    result++;
+                    safe = false;
+                    break;
                 }
-                safe = false;
-                errors = 0;
+                if ((increasing && diff > 0) || (!increasing && diff < 0))
+                {
+                    safe = true;
+                }
+                else
+                {
+                    safe = false;
+                    break;
+                }
             }
-            return result;
+            return safe;
         }
     }
 }
