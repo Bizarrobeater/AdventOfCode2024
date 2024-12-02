@@ -35,44 +35,13 @@ namespace AdventOfCode2024.DayClasses
         {
             var reader = new SplitIntMultiArrayFileReader();
             var reports = reader.GetReadableFileContent(file, isBenchmark);
-            bool increasing = false;
-            bool safe = false;
-            int curr;
-            int diff;
             int result = 0;
-            int count = 0;
             foreach (var report in reports)
             {
-                for (int i = 0; i < report.Length; i++)
-                {
-                    curr = report[i];
-                    if (i == 0)
-                    {
-                        increasing = curr < report[i + 1];
-                        continue;
-                    }
-                    diff = curr - report[i - 1];
-                    if (diff == 0 || Math.Abs(diff) > 3)
-                    {
-                        safe = false;
-                        break;
-                    }
-                    if ((increasing && diff > 0) || (!increasing && diff < 0))
-                    {
-                        safe = true;
-                    }
-                    else
-                    {
-                        safe = false;
-                        break;
-                    }
-                }
-                count++;
-                if (safe)
+                if (ValidateReport(report))
                 {
                     result++;
                 }
-                safe = false;
             }
             return result;
         }
