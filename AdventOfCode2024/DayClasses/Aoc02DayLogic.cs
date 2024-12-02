@@ -21,6 +21,13 @@ namespace AdventOfCode2024.DayClasses
                         {
                         1, 2 }
                     }
+            },
+            {
+                2,
+                new Dictionary<int, long>
+                {
+                    {1,4 }
+                }
             }
         };
 
@@ -72,7 +79,61 @@ namespace AdventOfCode2024.DayClasses
 
         public long RunQuestion2(FileInfo file, bool isBenchmark = false)
         {
-            throw new NotImplementedException();
+            var reader = new SplitIntMultiArrayFileReader();
+            var reports = reader.GetReadableFileContent(file, isBenchmark);
+            bool increasing = false;
+            bool safe = false;
+            int curr;
+            int prev = 0;
+            int diff;
+            int result = 0;
+            int errors = 0;
+            foreach (var report in reports)
+            {
+                for (int i = 0; i < report.Length; i++)
+                {
+                    curr = report[i];
+                    if (i == 0)
+                    {
+                        increasing = curr < report[i + 1];
+                        prev = curr;
+                        continue;
+                    }
+                    diff = curr - prev;
+                    if ((diff == 0 || Math.Abs(diff) > 3) || !((increasing && diff > 0) || (!increasing && diff < 0)))
+                    {
+                        if (errors == 0)
+                        {
+                            if (i == 1)
+                            {
+                                increasing = curr < report[i + 1];
+                                if (1 >= Math.Abs(curr - report[i+1]) && Math.Abs(curr - report[i + 1]) <= 3)
+                                {
+                                    prev = curr;
+                                }
+                            }
+
+                            errors++;
+                            continue;
+                        }
+
+                        safe = false;
+                        break;
+                    }
+                    else
+                    {
+                        safe = true;
+                        prev = curr;
+                    }
+                }
+                if (safe)
+                {
+                    result++;
+                }
+                safe = false;
+                errors = 0;
+            }
+            return result;
         }
     }
 }
