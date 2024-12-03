@@ -31,6 +31,11 @@ namespace AdventOfCode2024.DayClasses
             }
         };
 
+        private static readonly Regex _doReg = new Regex(@"(do\(\)|don't\(\))(((?!(do\(\)|don't\(\))).|\n)*)",
+            options: RegexOptions.Compiled);
+        private static readonly Regex _mulReg = new Regex(@"mul\(\d{1,3},\d{1,3}\)", options: RegexOptions.Compiled);
+        private static readonly Regex _subReg = new Regex(@"\((\d{1,3}),(\d{1,3})\)", options: RegexOptions.Compiled);
+
         public long RunQuestion1(FileInfo file, bool isBenchmark = false)
         {
             var reader = new CleanFileReader();
@@ -44,10 +49,8 @@ namespace AdventOfCode2024.DayClasses
             var content = reader.GetReadableFileContent(file, isBenchmark);
             content = "do()" + content;
 
-            var doPattern = @"(do\(\)|don't\(\))(((?!(do\(\)|don't\(\))).|\n)*)";
-            var doRegex = new Regex(doPattern);
             long result = 0;
-            foreach (Match match in doRegex.Matches(content))
+            foreach (Match match in _doReg.Matches(content))
             {
                 if (match.Groups[1].Value == "do()")
                 {
@@ -59,20 +62,35 @@ namespace AdventOfCode2024.DayClasses
 
         private long FindAndAddMatches(string content)
         {
-            string pattern = @"mul\(\d{1,3},\d{1,3}\)";
-            var reg = new Regex(pattern);
-            var matches = reg.Matches(content);
-
-            var subPattern = @"\((\d{1,3}),(\d{1,3})\)";
-            var subRegex = new Regex(subPattern);
             Match subMatch;
             long result = 0;
-            foreach (var match in matches)
+            foreach (var match in _mulReg.Matches(content))
             {
-                subMatch = subRegex.Match(match.ToString()!);
+                subMatch = _subReg.Match(match.ToString()!);
                 result += int.Parse(subMatch.Groups[1].Value) * int.Parse(subMatch.Groups[2].Value);
             }
             return result;
         }
+
+        /*Benchmarks
+         Before compiled regex
+        Benchmark in ticks:
+        First Run Time: 6836
+        Last Run Time: 81634
+        Average: 19860,751
+        Median: 20641
+        Max Time: 81634
+        Min Time: 6836
+         
+        After compiled regex
+        Benchmark in ticks:
+        First Run Time: 1978
+        Last Run Time: 39796
+        Average: 4450,742
+        Median: 3475
+        Max Time: 39796
+        Min Time: 1978
+         
+         */
     }
 }
