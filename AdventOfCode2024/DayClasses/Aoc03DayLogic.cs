@@ -35,21 +35,7 @@ namespace AdventOfCode2024.DayClasses
         {
             var reader = new CleanFileReader();
             var content = reader.GetReadableFileContent(file, isBenchmark);
-            string pattern = @"mul\(\d{1,3},\d{1,3}\)";
-            var reg = new Regex(pattern);
-            var matches = reg.Matches(content);
-
-            var subPattern = @"\((\d{1,3}),(\d{1,3})\)";
-            var subRegex = new Regex(subPattern);
-            Match subMatch;
-            long result = 0;
-            foreach (var match in matches)
-            {
-                subMatch = subRegex.Match(match.ToString()!);
-                result += int.Parse(subMatch.Groups[1].Value) * int.Parse(subMatch.Groups[2].Value);
-            }
-            return result;
-
+            return FindAndAddMatches(content);
         }
 
         public long RunQuestion2(FileInfo file, bool isBenchmark = false)
