@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 using AdventOfCodeApp.DayClasses;
 using AdventOfCodeApp.Util.FileReaders;
@@ -18,21 +13,21 @@ namespace AdventOfCode2024.DayClasses
                 1,
                 new Dictionary<int, long>()
                 {
-                    { 1,
-                    161 }
+                    { 1, 161 }
                 }
             },
             {
-                2, 
-                    new Dictionary<int, long>()
-                    {
-                        {1, 48 }
-                    }
+                2,
+                new Dictionary<int, long>()
+                {
+                    { 1, 48 }
+                }
             }
         };
 
         private static readonly Regex _doReg = new Regex(@"(do\(\)|don't\(\))(((?!(do\(\)|don't\(\))).|\n)*)",
             options: RegexOptions.Compiled);
+
         private static readonly Regex _mulReg = new Regex(@"mul\(\d{1,3},\d{1,3}\)", options: RegexOptions.Compiled);
         private static readonly Regex _subReg = new Regex(@"\((\d{1,3}),(\d{1,3})\)", options: RegexOptions.Compiled);
 
@@ -81,7 +76,7 @@ namespace AdventOfCode2024.DayClasses
         Median: 20641
         Max Time: 81634
         Min Time: 6836
-         
+
         After compiled regex
         Benchmark in ticks:
         First Run Time: 1978
@@ -99,7 +94,7 @@ namespace AdventOfCode2024.DayClasses
         Median: 9684
         Max Time: 56018
         Min Time: 7017
-         
+
          */
     }
 }
