@@ -44,7 +44,7 @@ namespace AdventOfCode2024.DayClasses
             var content = reader.GetReadableFileContent(file, isBenchmark);
             content = "do()" + content;
 
-            var doPattern = @"(do\(\)|don't\(\))(((?!(do\(\)|don't\(\))).)*)";
+            var doPattern = @"(do\(\)|don't\(\))(((?!(do\(\)|don't\(\))).|\n)*)";
             var doRegex = new Regex(doPattern);
             long result = 0;
             foreach (Match match in doRegex.Matches(content))
