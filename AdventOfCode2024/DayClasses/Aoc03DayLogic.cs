@@ -90,6 +90,15 @@ namespace AdventOfCode2024.DayClasses
         Median: 3475
         Max Time: 39796
         Min Time: 1978
+
+        Source gen regex
+        Benchmark in ticks:
+        First Run Time: 7017
+        Last Run Time: 56018
+        Average: 11407,884
+        Median: 9684
+        Max Time: 56018
+        Min Time: 7017
          
          */
     }
