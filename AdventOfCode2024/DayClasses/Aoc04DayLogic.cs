@@ -51,7 +51,40 @@ namespace AdventOfCode2024.DayClasses
 
         public long RunQuestion2(FileInfo file, bool isBenchmark = false)
         {
-            throw new NotImplementedException();
+            var reader = new CharMultiArrayFileReader();
+            var content = reader.GetReadableFileContent(file, isBenchmark);
+            var result = 0;
+
+            (int x, int y) curr;
+
+            for (int x = 0; x < content.GetLength(0); x++)
+            {
+                for (int y = 0; y < content.GetLength(1); y++)
+                {
+                    if (content[x, y] != 'A') continue;
+
+                    curr = new(x, y);
+                    result += CountMAS(content, curr);
+                }
+            }
+
+            return result;
+        }
+
+        private int CountMAS(char[,] input, (int x, int y) curr)
+        {
+            int x = curr.x; 
+            int y = curr.y;
+            if (
+                x - 1 >= 0 && y - 1 >= 0
+                && x + 1 < input.GetLength(0) && y + 1 < input.GetLength(1)
+                && ((input[x + 1, y + 1] == 'M' && input[x - 1, y - 1] == 'S') || (input[x + 1, y + 1] == 'S' && input[x - 1, y - 1] == 'M'))
+                && ((input[x + 1, y - 1] == 'M' && input[x - 1, y + 1] == 'S') || (input[x + 1, y - 1] == 'S' && input[x - 1, y + 1] == 'M'))
+                )
+            {
+                return 1;
+            }
+            return 0;
         }
 
         private int CountCardinal(char[,] input, (int x, int y) curr)
@@ -74,13 +107,13 @@ namespace AdventOfCode2024.DayClasses
         {
             var count = 0;
 
-            if (CheckDiagRightUp(input, curr))
-                count++;
             if (CheckDiagRightDown(input, curr))
                 count++;
-            if (CheckDiagLeftUp(input, curr))
+            if (CheckDiagRightUp(input, curr))
                 count++;
             if (CheckDiagLeftDown(input, curr))
+                count++;
+            if (CheckDiagLeftUp(input, curr))
                 count++;
 
             return count;
@@ -110,7 +143,7 @@ namespace AdventOfCode2024.DayClasses
             return false;
         }
 
-        private bool CheckDiagRightUp(char[,] input, (int x, int y) curr)
+        private bool CheckDiagRightDown(char[,] input, (int x, int y) curr)
         {
             if (curr.x + 3 < input.GetLength(0) && curr.y + 3 < input.GetLength(1) 
                 && input[curr.x + 1, curr.y + 1] == 'M' && input[curr.x + 2, curr.y + 2] == 'A' && input[curr.x + 3, curr.y + 3] == 'S') 
@@ -118,7 +151,7 @@ namespace AdventOfCode2024.DayClasses
             return false;
         }
 
-        private bool CheckDiagRightDown(char[,] input, (int x, int y) curr)
+        private bool CheckDiagRightUp(char[,] input, (int x, int y) curr)
         {
             if (curr.x + 3 < input.GetLength(0) && curr.y - 3 >= 0
                 && input[curr.x + 1, curr.y - 1] == 'M' && input[curr.x + 2, curr.y - 2] == 'A' && input[curr.x + 3, curr.y - 3] == 'S')
@@ -126,7 +159,7 @@ namespace AdventOfCode2024.DayClasses
             return false;
         }
 
-        private bool CheckDiagLeftUp(char[,] input, (int x, int y) curr)
+        private bool CheckDiagLeftDown(char[,] input, (int x, int y) curr)
         {
             if (curr.x - 3 >= 0 && curr.y + 3 < input.GetLength(1)
                 && input[curr.x - 1, curr.y + 1] == 'M' && input[curr.x - 2, curr.y + 2] == 'A' && input[curr.x - 3, curr.y + 3] == 'S')
@@ -134,7 +167,7 @@ namespace AdventOfCode2024.DayClasses
             return false;
         }
 
-        private bool CheckDiagLeftDown(char[,] input, (int x, int y) curr)
+        private bool CheckDiagLeftUp(char[,] input, (int x, int y) curr)
         {
             if (curr.x - 3 >= 0 && curr.y - 3 >= 0
                 && input[curr.x - 1, curr.y - 1] == 'M' && input[curr.x - 2, curr.y - 2] == 'A' && input[curr.x - 3, curr.y - 3] == 'S')
