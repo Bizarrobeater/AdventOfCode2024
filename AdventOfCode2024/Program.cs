@@ -23,13 +23,13 @@ namespace AdventOfCodeApp
             //var app = new AdventOfCode(2023, 3);
             //var app = new AdventOfCode(2023, 4);
 
-            //app.RunTest(1);
-            //app.RunActual(1);
+            app.RunTest(1);
+            app.RunActual(1);
 
-            app.RunTest(2);
-            app.RunActual(2);
+            //app.RunTest(2);
+            //app.RunActual(2);
 
-            Benchmark(app, 2, "ticks");
+            //Benchmark(app, 2, "ticks");
             //Benchmark(app, 2, "micro");
             //Console.ReadKey();
         }
