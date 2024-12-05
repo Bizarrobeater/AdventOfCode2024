@@ -18,18 +18,14 @@ namespace AdventOfCodeApp
             var client = host.Services.GetRequiredService<HttpClient>();
 
             var app = new AdventOfCode();
-            //var app = new AdventOfCode(2023, 1);
-            //var app = new AdventOfCode(2023, 2);
-            //var app = new AdventOfCode(2023, 3);
-            //var app = new AdventOfCode(2023, 4);
 
             //app.RunTest(1);
             //app.RunActual(1);
 
-            //app.RunTest(2);
-            app.RunActual(2);
-            //Benchmark(app, 1, "ticks");
-            //Benchmark(app, 2, "ticks");
+            app.RunTest(2);
+            //app.RunActual(2);
+            //Benchmark(app, 1, "micro");
+            //Benchmark(app, 2, "micro");
             //Benchmark(app, 2, "micro");
             //Console.ReadKey();
         }

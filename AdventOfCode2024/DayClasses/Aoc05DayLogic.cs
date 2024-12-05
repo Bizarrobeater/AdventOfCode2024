@@ -79,9 +79,12 @@ namespace AdventOfCode2024.DayClasses
             foreach (var update in updates)
             {
                 temp = update.Split(',').Select(x => int.Parse(x)).ToArray();
+
                 if (IsValidUpdate(temp, rules)) continue;
 
                 newOrder = new int[temp.Length];
+
+                var list = new List<int>(temp);
 
                 for (int i = 0; i < temp.Length; i++)
                 {
@@ -94,6 +97,17 @@ namespace AdventOfCode2024.DayClasses
 
             return result;
         }
+
+        /*
+        Benchmark my first solution
+        Benchmark in microseconds:
+        First Run Time: 804
+        Last Run Time: 42771
+        Average: 1752,332
+        Median: 934
+        Max Time: 42771
+        Min Time: 804
+        */
 
         private bool IsValidUpdate(int[] update, Dictionary<int, HashSet<int>> rules)
         {
@@ -112,6 +126,8 @@ namespace AdventOfCode2024.DayClasses
             }
             return true;
         }
+
+
 
         private Dictionary<int, HashSet<int>> CreateRulesDict(string[] rawRules) 
         {
