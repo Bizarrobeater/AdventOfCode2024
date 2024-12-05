@@ -48,26 +48,51 @@ namespace AdventOfCode2024.DayClasses
 
             var rules = CreateRulesDict(rawRules);
 
-            int[] tempUp;
+            int[] temp;
             long result = 0;
             foreach (var update in updates)
             {
-                tempUp = update.Split(',').Select(x => int.Parse(x)).ToArray();
-                if (IsValidUpdate(tempUp, rules))
+                temp = update.Split(',').Select(x => int.Parse(x)).ToArray();
+                if (IsValidUpdate(temp, rules))
                 {
-                    result += tempUp[(tempUp.Length / 2)];
+                    result += temp[(temp.Length / 2)];
                 }
             }
-
-
-
 
             return result;
         }
 
         public long RunQuestion2(FileInfo file, bool isBenchmark = false)
         {
-            throw new NotImplementedException();
+            var reader = new CleanFileReader();
+            var content = reader.GetReadableFileContent(file, isBenchmark);
+
+            var splitContent = content.Split(Environment.NewLine + Environment.NewLine);
+            var rawRules = splitContent[0].Split(Environment.NewLine);
+            var updates = splitContent[1].Split(Environment.NewLine);
+
+            var rules = CreateRulesDict(rawRules);
+            int[] temp;
+            long result = 0;
+            int[] newOrder;
+            int count;
+            foreach (var update in updates)
+            {
+                temp = update.Split(',').Select(x => int.Parse(x)).ToArray();
+                if (IsValidUpdate(temp, rules)) continue;
+
+                newOrder = new int[temp.Length];
+
+                for (int i = 0; i < temp.Length; i++)
+                {
+                    count = temp.Count(x => rules.ContainsKey(temp[i]) ? rules[temp[i]].Contains(x) : false);
+                    newOrder[temp.Length - count - 1] = temp[i];
+                }
+
+                result += newOrder[(newOrder.Length / 2)];
+            }
+
+            return result;
         }
 
         private bool IsValidUpdate(int[] update, Dictionary<int, HashSet<int>> rules)
