@@ -73,7 +73,6 @@ namespace AdventOfCode2024.DayClasses
 
             List<Ray> rays = new List<Ray>();
 
-            Ray start = LocateStart(content);
             Ray curr = LocateStart(content);
             rays.Add(curr);
             int count = 0;
@@ -90,18 +89,12 @@ namespace AdventOfCode2024.DayClasses
             foreach (var ray in rays) 
             {
                 tested.Add(ray.Position);
-                newBlock = new Coordinate() { X = ray.Position.X + ray.Direction.X, Y = ray.Position.Y + ray.Direction.Y };
                 newBlock = MoveNext(content, ray.Position, ray.Direction).Position;
                 if (
-                    //newBlock == start.Position ||
                     tested.Contains(newBlock) ||
-                    newBlock.X < 0 || newBlock.Y < 0 ||
-                    newBlock.Y >= content.GetLength(1) ||
-                    newBlock.X >= content.GetLength(0) ||
-                    content[newBlock.Y, newBlock.X] == '#'
+                    newBlock.X == -1
                     )
                     continue;
-                //curr = new Ray() { Position = ray.Position, Direction = new Coordinate() { X = ray.Direction.Y * -1, Y = ray.Direction.X } };
                 curr = MoveNext(content, ray.Position, ray.Direction, newBlock);
                 loopRays = [curr];
                 while (true)
@@ -151,7 +144,6 @@ namespace AdventOfCode2024.DayClasses
             public override int GetHashCode()
             {
                 return HashCode.Combine(X, Y);
-                //return X * 10 + Y;
             }
         }
 
