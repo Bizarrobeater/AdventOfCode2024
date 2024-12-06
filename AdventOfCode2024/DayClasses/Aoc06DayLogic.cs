@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using AdventOfCodeApp.DayClasses;
 using AdventOfCodeApp.Util.FileReaders;
+using CommunityToolkit.HighPerformance;
 
 namespace AdventOfCode2024.DayClasses
 {
@@ -33,15 +34,16 @@ namespace AdventOfCode2024.DayClasses
         {
             var reader = new CharMultiArrayFileReader();
             var content = reader.GetReadableFileContent(file, isBenchmark);
-
+            ReadOnlySpan2D<char> spanContent = new ReadOnlySpan2D<char>(content);
+            int length = content.GetLength(0);
             HashSet<Coordinate> visited = new HashSet<Coordinate>();
 
-            Ray curr = LocateStart(content);
+            Ray curr = LocateStart(spanContent, length);
             visited.Add(curr.Position);
 
             while (true)
             {
-                curr = MoveNext(content, curr.Position, curr.Direction);
+                curr = MoveNext(spanContent, length, curr.Position, curr.Direction);
                 if (curr.Position.X == -1) { break; }
                 visited.Add(curr.Position);
 
@@ -50,18 +52,18 @@ namespace AdventOfCode2024.DayClasses
             return visited.Count;
         }
 
-        private Ray MoveNext(char[,] content, Coordinate pos, Coordinate direction, Coordinate? newBlock = null)
+        private Ray MoveNext(ReadOnlySpan2D<char> content, int length, Coordinate pos, Coordinate direction, Coordinate? newBlock = null)
         {
             int nextX = pos.X + direction.X;
             int nextY = pos.Y + direction.Y;
-            if (nextX < 0 || nextX >= content.GetLength(0)
-                || nextY < 0 || nextY >= content.GetLength(1))
+            if (nextX < 0 || nextX >= length
+                || nextY < 0 || nextY >= length)
             {
                 return new Ray() { Direction = direction, Position = new Coordinate() { X = -1, Y = -1 } };
             }
             else if (content[nextY, nextX] == '#' || (newBlock != null && nextX == newBlock.X && nextY == newBlock.Y))
             {
-                return MoveNext(content, pos, new Coordinate() { X = direction.Y * -1, Y = direction.X}, newBlock);
+                return MoveNext(content, length, pos, new Coordinate() { X = direction.Y * -1, Y = direction.X}, newBlock);
             }
             return new Ray() { Direction = direction, Position = new Coordinate() { X = nextX, Y = nextY } };
         }
@@ -70,15 +72,18 @@ namespace AdventOfCode2024.DayClasses
         {
             var reader = new CharMultiArrayFileReader();
             var content = reader.GetReadableFileContent(file, isBenchmark);
+            ReadOnlySpan2D<char> spanContent = new ReadOnlySpan2D<char>(content);
+            int length = content.GetLength(0);
 
             List<Ray> rays = new List<Ray>();
 
-            Ray curr = LocateStart(content);
+
+            Ray curr = LocateStart(spanContent, length);
             rays.Add(curr);
             int count = 0;
             while (true)
             {
-                curr = MoveNext(content, curr.Position, curr.Direction);
+                curr = MoveNext(spanContent, length, curr.Position, curr.Direction);
                 if (curr.Position.X == -1) { break; }
                 rays.Add(curr);
             }
@@ -89,17 +94,17 @@ namespace AdventOfCode2024.DayClasses
             foreach (var ray in rays) 
             {
                 tested.Add(ray.Position);
-                newBlock = MoveNext(content, ray.Position, ray.Direction).Position;
+                newBlock = MoveNext(spanContent, length, ray.Position, ray.Direction).Position;
                 if (
                     tested.Contains(newBlock) ||
                     newBlock.X == -1
                     )
                     continue;
-                curr = MoveNext(content, ray.Position, ray.Direction, newBlock);
+                curr = MoveNext(spanContent, length, ray.Position, ray.Direction, newBlock);
                 loopRays = [curr];
                 while (true)
                 {
-                    curr = MoveNext(content, curr.Position, curr.Direction, newBlock);
+                    curr = MoveNext(spanContent, length, curr.Position, curr.Direction, newBlock);
                     if (loopRays.Contains(curr))
                     {
                         count++;
@@ -111,17 +116,16 @@ namespace AdventOfCode2024.DayClasses
                     }
                     loopRays.Add(curr);
                 }
-
             }
 
             return count;
         }
 
-        private Ray LocateStart(char[,] input)
+        private Ray LocateStart(ReadOnlySpan2D<char> input, int length)
         {
-            for (int y = 0;  y < input.GetLength(0); y++)
+            for (int y = 0;  y < length; y++)
             {
-                for (int x = 0;  x < input.GetLength(1); x++)
+                for (int x = 0;  x < length; x++)
                 {
                     if (input[y, x] == '^')
                     {
