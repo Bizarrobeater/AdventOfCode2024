@@ -1,13 +1,8 @@
-﻿using AdventOfCodeApp.DayClasses;
-using AdventOfCodeApp.Util;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+
+using AdventOfCodeApp.DayClasses;
+using AdventOfCodeApp.Util;
 
 namespace AdventOfCodeApp
 {
@@ -104,8 +99,6 @@ namespace AdventOfCodeApp
             return (long)_stopwatch.Elapsed.TotalMicroseconds;
         }
 
-
-
         public long RunActualBenchmarkMilliseconds(int questionNumber)
         {
             RunActualBenchmark(questionNumber);
@@ -114,7 +107,6 @@ namespace AdventOfCodeApp
 
         private long Run(Func<FileInfo, bool, long> questionFunction, FileInfo file)
         {
-
             _stopwatch.Reset();
             _stopwatch.Start();
 
@@ -156,6 +148,5 @@ namespace AdventOfCodeApp
 
             return result;
         }
-
     }
 }

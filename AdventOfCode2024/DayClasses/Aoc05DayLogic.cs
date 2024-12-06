@@ -89,6 +89,7 @@ namespace AdventOfCode2024.DayClasses
                 for (int i = 0; i < temp.Length; i++)
                 {
                     count = temp.Count(x => rules.ContainsKey(temp[i]) ? rules[temp[i]].Contains(x) : false);
+
                     newOrder[temp.Length - count - 1] = temp[i];
                 }
 
