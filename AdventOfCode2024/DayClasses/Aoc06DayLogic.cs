@@ -19,7 +19,14 @@ namespace AdventOfCode2024.DayClasses
                 { 
                     { 1, 41 } 
                 } 
-            } 
+            },
+            {
+                2,
+                new Dictionary<int, long>()
+                {
+                    { 1, 6 }
+                }
+            }
         };
 
         public long RunQuestion1(FileInfo file, bool isBenchmark = false)
@@ -29,7 +36,7 @@ namespace AdventOfCode2024.DayClasses
 
             HashSet<Coordinate> visited = new HashSet<Coordinate>();
 
-            CoordinateDirection curr = LocateStart(content);
+            Ray curr = LocateStart(content);
             visited.Add(curr.Position);
 
             while (true)
@@ -43,28 +50,81 @@ namespace AdventOfCode2024.DayClasses
             return visited.Count;
         }
 
-        private CoordinateDirection MoveNext(char[,] content, Coordinate pos, Coordinate direction)
+        private Ray MoveNext(char[,] content, Coordinate pos, Coordinate direction, Coordinate? newBlock = null)
         {
             int nextX = pos.X + direction.X;
             int nextY = pos.Y + direction.Y;
             if (nextX < 0 || nextX >= content.GetLength(0)
                 || nextY < 0 || nextY >= content.GetLength(1))
             {
-                return new CoordinateDirection() { Direction = direction, Position = new Coordinate() { X = -1, Y = -1 } };
+                return new Ray() { Direction = direction, Position = new Coordinate() { X = -1, Y = -1 } };
             }
-            else if (content[nextY, nextX] == '#')
+            else if (content[nextY, nextX] == '#' || (newBlock != null && nextX == newBlock.X && nextY == newBlock.Y))
             {
-                return MoveNext(content, pos, new Coordinate() { X = direction.Y * -1, Y = direction.X});
+                return MoveNext(content, pos, new Coordinate() { X = direction.Y * -1, Y = direction.X}, newBlock);
             }
-            return new CoordinateDirection() { Direction = direction, Position = new Coordinate() { X = nextX, Y = nextY } };
+            return new Ray() { Direction = direction, Position = new Coordinate() { X = nextX, Y = nextY } };
         }
 
         public long RunQuestion2(FileInfo file, bool isBenchmark = false)
         {
-            throw new NotImplementedException();
+            var reader = new CharMultiArrayFileReader();
+            var content = reader.GetReadableFileContent(file, isBenchmark);
+
+            List<Ray> rays = new List<Ray>();
+
+            Ray start = LocateStart(content);
+            Ray curr = LocateStart(content);
+            rays.Add(curr);
+            int count = 0;
+            while (true)
+            {
+                curr = MoveNext(content, curr.Position, curr.Direction);
+                if (curr.Position.X == -1) { break; }
+                rays.Add(curr);
+            }
+
+            Coordinate newBlock;
+            HashSet<Ray> loopRays;
+            HashSet<Coordinate> tested = new HashSet<Coordinate>();
+            foreach (var ray in rays) 
+            {
+                tested.Add(ray.Position);
+                newBlock = new Coordinate() { X = ray.Position.X + ray.Direction.X, Y = ray.Position.Y + ray.Direction.Y };
+                newBlock = MoveNext(content, ray.Position, ray.Direction).Position;
+                if (
+                    //newBlock == start.Position ||
+                    tested.Contains(newBlock) ||
+                    newBlock.X < 0 || newBlock.Y < 0 ||
+                    newBlock.Y >= content.GetLength(1) ||
+                    newBlock.X >= content.GetLength(0) ||
+                    content[newBlock.Y, newBlock.X] == '#'
+                    )
+                    continue;
+                //curr = new Ray() { Position = ray.Position, Direction = new Coordinate() { X = ray.Direction.Y * -1, Y = ray.Direction.X } };
+                curr = MoveNext(content, ray.Position, ray.Direction, newBlock);
+                loopRays = [curr];
+                while (true)
+                {
+                    curr = MoveNext(content, curr.Position, curr.Direction, newBlock);
+                    if (loopRays.Contains(curr))
+                    {
+                        count++;
+                        break;
+                    }
+                    else if (curr.Position.X == -1)
+                    {
+                        break;
+                    }
+                    loopRays.Add(curr);
+                }
+
+            }
+
+            return count;
         }
 
-        private CoordinateDirection LocateStart(char[,] input)
+        private Ray LocateStart(char[,] input)
         {
             for (int y = 0;  y < input.GetLength(0); y++)
             {
@@ -72,7 +132,7 @@ namespace AdventOfCode2024.DayClasses
                 {
                     if (input[y, x] == '^')
                     {
-                        return new CoordinateDirection()
+                        return new Ray()
                         {
                             Position = new Coordinate() { X = x, Y = y },
                             Direction = new Coordinate() { X = 0, Y = -1 },
@@ -91,17 +151,18 @@ namespace AdventOfCode2024.DayClasses
             public override int GetHashCode()
             {
                 return HashCode.Combine(X, Y);
+                //return X * 10 + Y;
             }
         }
 
-        private record CoordinateDirection
+        private record Ray
         {
             public required Coordinate Position;
             public required Coordinate Direction;
 
             public override int GetHashCode()
             {
-                return HashCode.Combine(Position, Direction);
+                return HashCode.Combine(Position.GetHashCode(), Direction.GetHashCode());
             }
         }
     }
