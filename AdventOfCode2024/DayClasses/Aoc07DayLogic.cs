@@ -18,6 +18,9 @@ namespace AdventOfCode2024.DayClasses
                 {
                     {
                         1, 3749
+                    },
+                    {
+                        2, 3245122495150
                     }
                 }
             },
@@ -27,6 +30,9 @@ namespace AdventOfCode2024.DayClasses
                 {
                     {
                         1, 11387
+                    },
+                    {
+                        2, 105517128211543
                     }
                 }
             }
