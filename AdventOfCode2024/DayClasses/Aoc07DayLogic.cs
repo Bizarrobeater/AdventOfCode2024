@@ -98,7 +98,7 @@ namespace AdventOfCode2024.DayClasses
             {
                 Target = target;
                 Value = value;
-                if (Value < Target && input.Length > 0)
+                if (Value <= Target && input.Length > 0)
                 {
                     PlusNode = new OperationNode(Target, Value + input[0], input.Slice(1));
                     MultNode = new OperationNode(Target, Value * input[0], input.Slice(1));

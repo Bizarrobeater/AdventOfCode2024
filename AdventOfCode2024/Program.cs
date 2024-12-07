@@ -19,7 +19,7 @@ namespace AdventOfCodeApp
 
             var app = new AdventOfCode();
 
-            //app.RunTest(1);
+            app.RunTest(1);
             app.RunActual(1);
 
             //app.RunTest(2);
