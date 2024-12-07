@@ -87,7 +87,7 @@ namespace AdventOfCode2024.DayClasses
 
             Span<int> inputs = splitLine[1].Split(" ").Select(x => int.Parse(x)).ToArray();
 
-            var topNode = new AdvancedOperationNode(target, 0, inputs, true);
+            var topNode = new AdvancedOperationNode(target, 0, inputs);
             return topNode.Valid ? topNode.Target : 0;
         }
 
@@ -113,7 +113,7 @@ namespace AdventOfCode2024.DayClasses
             {
                 Target = target;
                 Value = value;
-                if (Value < Target && input.Length > 0)
+                if (Value <= Target && input.Length > 0)
                 {
                     PlusNode = new OperationNode(Target, Value + input[0], input.Slice(1));
                     MultNode = new OperationNode(Target, Value * input[0], input.Slice(1));
@@ -128,70 +128,67 @@ namespace AdventOfCode2024.DayClasses
             public AdvancedOperationNode? PlusNode { get; set; }
             public AdvancedOperationNode? MultNode { get; set; }
             public AdvancedOperationNode? CombineNode { get; set; }
-            //private AdvancedOperationNode? ParentNode { get; set; }
 
-            public bool TopNode { get; set; } = false;
 
-            private bool IsEndNode { get; set; } = false;
+            public bool Valid { get; set; } = false;
 
-            public bool Valid
-            {
-                get
-                {
-                    return (PlusNode is not null && PlusNode.Valid)
-                        || (MultNode is not null && MultNode.Valid)
-                        || (CombineNode is not null && CombineNode.Valid)
-                        || (IsEndNode && Value == Target);
-                }
-
-            }
-
-            public AdvancedOperationNode(long target, long value, Span<int> input, bool topNode = false)
+            public AdvancedOperationNode(long target, long value, Span<int> input)
             {
                 Target = target;
                 Value = value;
-                TopNode = topNode;
                 if (input.Length > 0)
                 {
                     if (Value <= Target)
                     {
                         PlusNode = new AdvancedOperationNode(Target, Value + input[0], input[1..]);
-                        if (!TopNode)
+                        if (PlusNode.Valid)
+                        {
+                            Valid = true;
+                            return;
+                        }
+                        else
+                        {
+                            PlusNode = null;
+                        }
+                        if (Value != 0)
                         {
                             MultNode = new AdvancedOperationNode(Target, Value * input[0], input[1..]);
-                            CombineNode = new AdvancedOperationNode(Target, long.Parse(Value.ToString() + input[0].ToString()), input[1..]);
+                            if (MultNode.Valid)
+                            {
+                                Valid = true;
+                                return;
+                            }
+                            else
+                            {
+                                MultNode = null;
+                            }
+                            long newValue = 0;
+                            if (input[0] < 10)
+                                newValue = Value * 10 + input[0];
+                            else if (input[0] < 100)
+                                newValue = Value * 100 + input[0];
+                            else if (input[0] < 1000)
+                                newValue = Value * 1000 + input[0];
+                            else if (input[0] < 10_000)
+                                newValue = Value * 10_000 + input[0];
+                            CombineNode = new AdvancedOperationNode(Target, newValue, input[1..]);
+                            if (CombineNode.Valid)
+                            {
+                                Valid = true;
+                                return;
+                            }
+                            else
+                            {
+                                CombineNode = null;
+                            }
                         }
                     }
                 }
                 else
                 {
-                    IsEndNode = true;
+                    Valid = Value == Target;
                 }
             }
-
-            //public AdvancedOperationNode(long target, long value, Span<int> input, bool topNode = false, AdvancedOperationNode? parent = null)
-            //{
-            //    Target = target;
-            //    Value = value;
-            //    TopNode = topNode;
-            //    ParentNode = parent;
-            //    if (input.Length > 0)
-            //    {
-            //        if (Value <= Target)
-            //        {
-            //            PlusNode = new AdvancedOperationNode(Target, Value + input[0], input[1..], parent: this);
-            //            if (!TopNode)
-            //            {
-            //                MultNode = new AdvancedOperationNode(Target, Value * input[0], input[1..], parent: this);
-            //                CombineNode = new AdvancedOperationNode(Target, long.Parse(Value.ToString() + input[0].ToString()), input[1..], parent: this);
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        IsEndNode = true;
-            //    }
-            //}
         }
     }
 }
