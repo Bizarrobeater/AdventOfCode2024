@@ -20,10 +20,10 @@ namespace AdventOfCodeApp
             var app = new AdventOfCode();
 
             //app.RunTest(1);
-            app.RunActual(1);
+            //app.RunActual(1);
 
             //app.RunTest(2);
-            //app.RunActual(2);
+            app.RunActual(2);
             //Benchmark(app, 1, "micro");
             //Benchmark(app, 2, "milli");
             //Benchmark(app, 2, "micro");
