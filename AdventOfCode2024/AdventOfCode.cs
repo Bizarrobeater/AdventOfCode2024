@@ -8,7 +8,7 @@ namespace AdventOfCodeApp
 {
     internal class AdventOfCode
     {
-        public int Year { get; private set; } = 2023;
+        public int Year { get; private set; } = 2024;
         public int Day { get; private set; }
 
         public FileGetter FileGetter { get; private set; }
