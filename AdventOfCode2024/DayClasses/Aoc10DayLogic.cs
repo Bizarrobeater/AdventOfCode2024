@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,18 +26,7 @@ namespace AdventOfCode2024.DayClasses
             var reader = new IntMultiArrayFileReader();
             var content = reader.GetReadableFileContent(file, isBenchmark).AsSpan2D();
 
-            var trailheads = new List<(int x, int y)>();
-
-            for (int y = 0; y < content.Height; y++)
-            {
-                for (int x = 0; x < content.Width; x++)
-                {
-                    if (content[y, x] == 0)
-                    {
-                        trailheads.Add((x, y));
-                    }
-                }
-            }
+            var trailheads = GetTrailheads(content);
 
             long result = 0;
             foreach (var trailhead in trailheads)
@@ -52,23 +42,28 @@ namespace AdventOfCode2024.DayClasses
             return point.x >= 0 && point.y >= 0 && point.x < map.Width && point.y < map.Height;
         }
 
-        public long RunQuestion2(FileInfo file, bool isBenchmark = false)
+        private List<(int x, int y)> GetTrailheads(Span2D<int?> map)
         {
-            var reader = new IntMultiArrayFileReader();
-            var content = reader.GetReadableFileContent(file, isBenchmark).AsSpan2D();
-
             var trailheads = new List<(int x, int y)>();
-
-            for (int y = 0; y < content.Height; y++)
+            for (int y = 0; y < map.Height; y++)
             {
-                for (int x = 0; x < content.Width; x++)
+                for (int x = 0; x < map.Width; x++)
                 {
-                    if (content[y, x] == 0)
+                    if (map[y, x] == 0)
                     {
                         trailheads.Add((x, y));
                     }
                 }
             }
+            return trailheads;
+        }
+
+        public long RunQuestion2(FileInfo file, bool isBenchmark = false)
+        {
+            var reader = new IntMultiArrayFileReader();
+            var content = reader.GetReadableFileContent(file, isBenchmark).AsSpan2D();
+
+            var trailheads = GetTrailheads(content);
 
             long result = 0;
             foreach (var trailhead in trailheads)
