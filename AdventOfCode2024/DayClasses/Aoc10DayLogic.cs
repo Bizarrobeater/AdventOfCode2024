@@ -25,8 +25,6 @@ namespace AdventOfCode2024.DayClasses
             var reader = new IntMultiArrayFileReader();
             var content = reader.GetReadableFileContent(file, isBenchmark).AsSpan2D();
 
-            //return DoQuestion(content).ToHashSet().Count;
-
             var trailheads = new List<(int x, int y)>();
 
             for (int y = 0; y < content.Height; y++)
