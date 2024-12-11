@@ -19,13 +19,13 @@ namespace AdventOfCodeApp
 
             var app = new AdventOfCode();
 
-            app.RunTest(1);
+            //app.RunTest(1);
             //app.RunActual(1);
 
             //app.RunTest(2);
-            //app.RunActual(2);
+            app.RunActual(2);
             //Benchmark(app, 1, "micro");
-            //Benchmark(app, 2, "milli");
+            //Benchmark(app, 2, "micro");
             //Benchmark(app, 2, "micro");
             //Console.ReadKey();
         }
@@ -62,16 +62,16 @@ namespace AdventOfCodeApp
             Console.WriteLine($"Max Time: {timeTaken.Max()}");
             Console.WriteLine($"Min Time: {timeTaken.Min()}");
 
-            if (type != "milli" && type != "micro")
-                return;
+            //if (type != "milli" && type != "micro")
+            //    return;
 
-            Console.WriteLine("Result counts:");
-            List<long> uniqueTimes = resultAmounts.Keys.ToList();
-            uniqueTimes.Sort();
-            foreach (long uniqueTime in uniqueTimes)
-            {
-                Console.WriteLine($"Time taken - {uniqueTime}, Count - {resultAmounts[uniqueTime]}");
-            }
+            //Console.WriteLine("Result counts:");
+            //List<long> uniqueTimes = resultAmounts.Keys.ToList();
+            //uniqueTimes.Sort();
+            //foreach (long uniqueTime in uniqueTimes)
+            //{
+            //    Console.WriteLine($"Time taken - {uniqueTime}, Count - {resultAmounts[uniqueTime]}");
+            //}
         }
     }
 }
