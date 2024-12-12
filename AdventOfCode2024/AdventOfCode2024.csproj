@@ -16,6 +16,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="InputFiles\Adv202412-1-03.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="InputFiles\Adv202412-1-02.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="InputFiles\Adv202412-1-01.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="InputFiles\Adv202412.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="InputFiles\Adv202411.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
