@@ -194,11 +194,13 @@ namespace AdventOfCode2024.DayClasses
                     foreach (var lookDir in directions) 
                     { 
                         moveDir = GetMoveDirFromLookDir(lookDir);
-                        temp = new Coordinate() { X = edgeCorr.Coordinate.X + moveDir.x, Y = edgeCorr.Coordinate.Y + moveDir.y };
+                        temp = new Coordinate() { X = edgeCorr.Coordinate.X + lookDir.x, Y = edgeCorr.Coordinate.Y + lookDir.y };
+                        //temp = new Coordinate() { X = edgeCorr.Coordinate.X + lookDir.x, Y = edgeCorr.Coordinate.Y + lookDir.y };
                         edgeCoordinate = new EdgeCoordinate() { Coordinate = edgeCorr.Coordinate, X = lookDir.x, Y = lookDir.y };
-                        if (edgeCorr.Neighbours.Contains(temp) || checkedEdges.Contains(edgeCoordinate)) continue;
-                        checkedEdges.Add(edgeCoordinate);
+
+                        if ((edgeCorr.Neighbours.Contains(temp) && !edgeCoords.Contains(temp)) || checkedEdges.Contains(edgeCoordinate)) continue;
                         sides++;
+                        temp = edgeCorr.Coordinate;
                         while (edgeCoords.Contains(temp))
                         {
                             checkedEdges.Add(new EdgeCoordinate() { Coordinate = temp, X = lookDir.x, Y = lookDir.y });
@@ -206,7 +208,7 @@ namespace AdventOfCode2024.DayClasses
                         }
                     }
                 }
-                return sides;
+                return sides * Coordinates.Count;
             }
 
             private static (int x, int y) GetMoveDirFromLookDir((int x, int y) dir)
@@ -214,9 +216,9 @@ namespace AdventOfCode2024.DayClasses
                 switch (dir)
                 {
                     case (-1, 0): return (0, 1);
-                    case (0, -1): return (-1, 0);
+                    case (0, -1): return (1, 0);
                     case (1, 0): return (0, -1);
-                    case (0, 1): return (1, 0);
+                    case (0, 1): return (-1, 0);
                     default: throw new NotImplementedException();
                 }
             }
