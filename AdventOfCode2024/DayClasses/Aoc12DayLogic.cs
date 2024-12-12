@@ -14,7 +14,7 @@ namespace AdventOfCode2024.DayClasses
         public Dictionary<int, Dictionary<int, long>> ExpectedTestResults => new()
         {
             { 1, new() { {1,140}, { 2, 772}, { 3, 1930} } },
-            { 2, new() { {1, 80}, { 2, 436}, {3, 236 }, {4, 368 }, { 5, 1206 } } }
+            { 2, new() { {1, 80}, { 2, 436}, {3, 236 }, {4, 368 }, { 5, 1206 }, { 6, 16 } } }
         };
 
         public long RunQuestion1(FileInfo file, bool isBenchmark = false)
@@ -84,6 +84,11 @@ namespace AdventOfCode2024.DayClasses
             public required int X { get; set; }
             public required int Y { get; set; }
 
+            public Coordinate MoveCoordinate((int x, int y) direction)
+            {
+                return new Coordinate() { X = this.X + direction.x, Y = this.Y + direction.y };
+            }
+
             public override int GetHashCode()
             {
                 return HashCode.Combine(X.GetHashCode(), Y.GetHashCode());
@@ -95,6 +100,8 @@ namespace AdventOfCode2024.DayClasses
             public required Coordinate Coordinate { get; set; }
             public required int X { get; set; }
             public required int Y { get; set; }
+
+
             public override int GetHashCode()
             {
                 return HashCode.Combine(Coordinate.GetHashCode(), X.GetHashCode(), Y.GetHashCode());
@@ -107,9 +114,33 @@ namespace AdventOfCode2024.DayClasses
 
             public Coordinate Coordinate { get; set; }
             public HashSet<Coordinate> Neighbours { get; set; } = new();
-            public Region Region { get; set; }
+            public Region? Region { get; set; }
 
             public int Fences => 4 - Neighbours.Count;
+
+            public HashSet<EdgeCoordinate> Edges
+            {
+                get
+                {
+                    var result = new HashSet<EdgeCoordinate>();
+                    if (Fences == 0) return result;
+                    foreach (var direction in directions)
+                    {
+                        if (!Neighbours.Contains(Coordinate.MoveCoordinate(direction)))
+                        {
+                            result.Add(new EdgeCoordinate { Coordinate = Coordinate, X = direction.x, Y = direction.y });
+                        }
+                    }
+                    return result;
+                }
+            }
+
+            private RegionCoordinate()
+            {
+                Coordinate = new Coordinate() { X = -10, Y = -10 };
+            }
+
+            public static RegionCoordinate Empty => new RegionCoordinate();
 
 
             public RegionCoordinate(Region region, Coordinate coordinate, Span2D<char> map)
@@ -145,7 +176,7 @@ namespace AdventOfCode2024.DayClasses
             public HashSet<Coordinate> Coordinates { get; set; } = new HashSet<Coordinate>();
             public List<RegionCoordinate> RegionCoordinates { get; set; } = new List<RegionCoordinate>();
 
-            public HashSet<RegionCoordinate> EdgeCoordinates
+            public HashSet<RegionCoordinate> RegionEdgeCoordinates
             {
                 get
                 {
@@ -183,33 +214,40 @@ namespace AdventOfCode2024.DayClasses
             private long GetFencePriceWithSides()
             {
                 int sides = 0;
-                var edges = EdgeCoordinates;
-                var edgeCoords = edges.Select(x => x.Coordinate).ToHashSet();
+                var regionEdges = RegionEdgeCoordinates;
                 Coordinate temp;
                 EdgeCoordinate edgeCoordinate;
                 HashSet<EdgeCoordinate> checkedEdges = new HashSet<EdgeCoordinate>();
                 (int x, int y) moveDir;
-                foreach (var edgeCorr in EdgeCoordinates)
+                foreach (var edgeCorr in RegionEdgeCoordinates)
                 {
-                    foreach (var lookDir in directions) 
+                    foreach (var edgeDir in edgeCorr.Edges) 
                     { 
-                        moveDir = GetMoveDirFromLookDir(lookDir);
-                        temp = new Coordinate() { X = edgeCorr.Coordinate.X + lookDir.x, Y = edgeCorr.Coordinate.Y + lookDir.y };
-                        //temp = new Coordinate() { X = edgeCorr.Coordinate.X + lookDir.x, Y = edgeCorr.Coordinate.Y + lookDir.y };
-                        edgeCoordinate = new EdgeCoordinate() { Coordinate = edgeCorr.Coordinate, X = lookDir.x, Y = lookDir.y };
+                        moveDir = GetMoveDirFromLookDir((edgeDir.X, edgeDir.Y));
+                        edgeCoordinate = edgeDir;
 
-                        if ((edgeCorr.Neighbours.Contains(temp) && !edgeCoords.Contains(temp)) || checkedEdges.Contains(edgeCoordinate)) continue;
+                        if (checkedEdges.Contains(edgeCoordinate)) continue;
                         sides++;
                         temp = edgeCorr.Coordinate;
-                        while (edgeCoords.Contains(temp))
+                        while (RegionEdgeCoordinates.FirstOrDefault(x => x.Coordinate == temp, RegionCoordinate.Empty).Edges.Contains(edgeCoordinate))
                         {
-                            checkedEdges.Add(new EdgeCoordinate() { Coordinate = temp, X = lookDir.x, Y = lookDir.y });
-                            temp = new Coordinate() { X = temp.X + moveDir.x, Y = temp.Y + moveDir.y };
+
+                            checkedEdges.Add(edgeCoordinate);
+                            temp = temp.MoveCoordinate(moveDir);
+                            edgeCoordinate = new EdgeCoordinate() { Coordinate = temp, X = edgeDir.X,Y = edgeDir.Y };
+                            
+                            if (checkedEdges.Contains(edgeCoordinate))
+                            {
+                                sides--;
+                                break;
+                            }
                         }
                     }
                 }
                 return sides * Coordinates.Count;
             }
+
+            
 
             private static (int x, int y) GetMoveDirFromLookDir((int x, int y) dir)
             {
