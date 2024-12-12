@@ -22,6 +22,7 @@ namespace AdventOfCode2024.DayClasses
             var regions = new List<Region>();
             HashSet<Coordinate> coordinates = new HashSet<Coordinate>();
             Coordinate curr;
+            Region newRegion;
 
             for (int y = 0; y < content.Height; y++)
             {
@@ -29,12 +30,19 @@ namespace AdventOfCode2024.DayClasses
                 {
                     curr = new Coordinate() { X = x, Y = y };
                     if (coordinates.Contains(curr)) continue;
-                    regions.Add(new Region(content, ))
+                    newRegion = new Region(content, curr);
+                    regions.Add(newRegion);
+                    coordinates.UnionWith(newRegion.Coordinates);
                 }
             }
 
+            long result = 0;
+            foreach (var region in regions)
+            {
+                result += region.FencePrice;
+            }
 
-            return 0;
+            return result;
         }
 
         private HashSet<Coordinate> GetUsedCoordinates(List<Region> regions)
@@ -68,7 +76,7 @@ namespace AdventOfCode2024.DayClasses
             private readonly (int x, int y)[] directions = { (1, 0), (-1, 0), (0, -1), (0, 1) };
 
             public Coordinate Coordinate { get; set; }
-            public List<RegionCoordinate> Neighbours { get; set; } = new List<RegionCoordinate>();
+            public List<Coordinate> Neighbours { get; set; } = new List<Coordinate>();
             public Region Region { get; set; }
 
             public int Fences => 4 - Neighbours.Count;
@@ -78,13 +86,18 @@ namespace AdventOfCode2024.DayClasses
             {
                 Region = region;
                 Coordinate = coordinate;
+                Region.Coordinates.Add(coordinate);
                 Coordinate temp;
                 foreach (var direction in directions)
                 {
                     temp = new Coordinate() {Y = Coordinate.Y + direction.y, X = Coordinate.X + direction.x };
-                    if (IsWithinMap(map, temp) && map[temp.Y, temp.X] == Region.Type && !Region.Coordinates.Contains(temp))
+                    if (IsWithinMap(map, temp) && map[temp.Y, temp.X] == Region.Type)
                     {
-                        Neighbours.Add(new RegionCoordinate(Region, temp, map));
+                        if (!Region.Coordinates.Contains(temp))
+                        {
+                            Region.RegionCoordinates.Add(new RegionCoordinate(region, temp, map));
+                        }
+                        Neighbours.Add(temp);
                     }
                 }
             }
@@ -102,7 +115,7 @@ namespace AdventOfCode2024.DayClasses
             public HashSet<Coordinate> Coordinates { get; set; } = new HashSet<Coordinate>();
             public List<RegionCoordinate> RegionCoordinates { get; set; } = new List<RegionCoordinate>();
 
-            private long FencePrice 
+            public long FencePrice 
             { 
                 get 
                 {
@@ -115,7 +128,7 @@ namespace AdventOfCode2024.DayClasses
                 } 
             }
 
-            private Region(Span2D<char> map, Coordinate coordinate ) 
+            public Region(Span2D<char> map, Coordinate coordinate ) 
             {
                 Type = map[coordinate.X, coordinate.Y];
                 Coordinates.Add(coordinate);
