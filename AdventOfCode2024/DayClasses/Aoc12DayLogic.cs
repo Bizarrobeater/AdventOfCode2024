@@ -11,7 +11,8 @@ namespace AdventOfCode2024.DayClasses
     {
         public Dictionary<int, Dictionary<int, long>> ExpectedTestResults => new()
         {
-            { 1, new() { {1,140}, { 2, 772}, { 3, 1930} } }
+            { 1, new() { {1,140}, { 2, 772}, { 3, 1930} } },
+            { 2, new() { {1, 80}, { 2, 436}, {3, 236 }, {4, 368 }, { 5, 1206 } } }
         };
 
         public long RunQuestion1(FileInfo file, bool isBenchmark = false)
@@ -76,7 +77,7 @@ namespace AdventOfCode2024.DayClasses
             private readonly (int x, int y)[] directions = { (1, 0), (-1, 0), (0, -1), (0, 1) };
 
             public Coordinate Coordinate { get; set; }
-            public List<Coordinate> Neighbours { get; set; } = new List<Coordinate>();
+            public HashSet<Coordinate> Neighbours { get; set; } = new();
             public Region Region { get; set; }
 
             public int Fences => 4 - Neighbours.Count;
@@ -130,7 +131,7 @@ namespace AdventOfCode2024.DayClasses
 
             public Region(Span2D<char> map, Coordinate coordinate ) 
             {
-                Type = map[coordinate.X, coordinate.Y];
+                Type = map[coordinate.Y, coordinate.X];
                 Coordinates.Add(coordinate);
                 RegionCoordinates.Add(new RegionCoordinate(this, coordinate, map));
             }
