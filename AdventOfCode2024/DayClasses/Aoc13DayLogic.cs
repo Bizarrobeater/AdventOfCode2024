@@ -21,6 +21,16 @@ namespace AdventOfCode2024.DayClasses
             { 1, new() { { 1, 480 } } }
         };
 
+        // current wrong results
+        /*
+         * 46832: 46.832 high
+            26670: 26.670 low
+            29671: 29.671 low
+            33153: 33.153 wrong
+            33902: 33.902 wrong
+         */
+
+
         public long RunQuestion1(FileInfo file, bool isBenchmark = false)
         {
             var reader = new CleanFileReader();
