@@ -62,40 +62,42 @@ namespace AdventOfCode2024.DayClasses
             int hitValue;
             foreach (var arcade in arcades)
             {
-                currLowest = _default;
-                (buttonType, valueType, ratio) = GetButtonTestType(arcade);
-                (testButton, testType) = GetOther((buttonType, valueType));
+
+
+                //currLowest = _default;
+                //(buttonType, valueType, ratio) = GetButtonTestType(arcade);
+                //(testButton, testType) = GetOther((buttonType, valueType));
                 
-                buttonValue = arcade.GetButton(buttonType).GetValue(valueType);
-                testButtonValue = arcade.GetButton(testButton).GetValue(valueType);
+                //buttonValue = arcade.GetButton(buttonType).GetValue(valueType);
+                //testButtonValue = arcade.GetButton(testButton).GetValue(valueType);
                 
-                goal = arcade.GetGoal(valueType);
+                //goal = arcade.GetGoal(valueType);
                 
-                //maxRatio = (goal - ((goal - ratio * buttonValue) * testButtonValue)) / buttonValue;
-                //var ratioDiff = ratio - maxRatio;
-                for (mainPresses = 0; mainPresses < 100; mainPresses++)
-                {
-                    currValue = goal - buttonValue * mainPresses;
-                    if (currValue < 0) break;
-                    secPresses = currValue / testButtonValue;
-                    if (currValue % testButtonValue == 0 && (arcade.GetGoal(testType) - arcade.GetButton(buttonType).GetValue(testType) * mainPresses) % arcade.GetButton(testButton).GetValue(testType) == 0)
-                    {
-                        secPresses = currValue / testButtonValue;
-                        if (secPresses > 100) continue;
-                        if (buttonType == 'A')
-                        {
-                            hitValue = 3 * mainPresses + 1 * secPresses;
+                ////maxRatio = (goal - ((goal - ratio * buttonValue) * testButtonValue)) / buttonValue;
+                ////var ratioDiff = ratio - maxRatio;
+                //for (mainPresses = 0; mainPresses < 100; mainPresses++)
+                //{
+                //    currValue = goal - buttonValue * mainPresses;
+                //    if (currValue < 0) break;
+                //    secPresses = currValue / testButtonValue;
+                //    if (currValue % testButtonValue == 0 && (arcade.GetGoal(testType) - arcade.GetButton(buttonType).GetValue(testType) * mainPresses) % arcade.GetButton(testButton).GetValue(testType) == 0)
+                //    {
+                //        secPresses = currValue / testButtonValue;
+                //        //if (secPresses > 100) continue;
+                //        if (buttonType == 'A')
+                //        {
+                //            hitValue = 3 * mainPresses + 1 * secPresses;
                             
-                        }
-                        else
-                        {
-                            hitValue = 3 * secPresses + mainPresses;
+                //        }
+                //        else
+                //        {
+                //            hitValue = 3 * secPresses + mainPresses;
                             
-                        }
-                        currLowest = hitValue < currLowest ? hitValue : currLowest;
-                    }
-                }
-                result += currLowest != _default ? currLowest : 0;
+                //        }
+                //        currLowest = hitValue < currLowest ? hitValue : currLowest;
+                //    }
+                //}
+                //result += currLowest != _default ? currLowest : 0;
                 //}
                 //currValue = arcade.GetGoal(valueType) - (arcade.GetButton(buttonType).GetValue(valueType) * (maxRatio / 2));
             }

@@ -11,7 +11,7 @@ namespace AdventOfCodeApp.DayClasses
     {
         public static IDayLogic? CreateDayLogic(AdventOfCode adventOfCode)
         {
-            string dayLogicName = $"Aoc{adventOfCode.Day.ToString("00")}DayLogic";
+            string dayLogicName = $"Aoc{adventOfCode.Year}_{adventOfCode.Day.ToString("00")}DayLogic";
             return Assembly.GetExecutingAssembly().CreateInstance($"AdventOfCode2024.DayClasses.{dayLogicName}") as IDayLogic;
         }
     }
