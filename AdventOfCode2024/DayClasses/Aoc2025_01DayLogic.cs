@@ -62,6 +62,7 @@ namespace AdventOfCode2024.DayClasses
             return result;
         }
 
+        // wrong guess 5752 too low
         public long RunQuestion2(FileInfo file, bool isBenchmark = false)
         {
             var reader = new LineSplitFileReader();
@@ -84,15 +85,26 @@ namespace AdventOfCode2024.DayClasses
                 {
                     if (remainderSteps > dialPos)
                     {
+
                         dialPos += 100; // * (int)(Math.Ceiling((double)steps / 100));
+                        if (dialPos > 100)
+                        {
+                            passes++;
+                        }
+
                     }
                     dialPos -= remainderSteps;
                 }
                 else if (direction == 'R')
                 {
-                    if (dialPos + remainderSteps >= 100)
+                    if (dialPos + remainderSteps > 100)
                     {
+
                         dialPos -= 100; // * (int)(Math.Ceiling((double)steps / 100));
+                        if (dialPos < 0)
+                        {
+                            passes++;
+                        }
                     }
                     dialPos += remainderSteps;
                 }
@@ -104,7 +116,12 @@ namespace AdventOfCode2024.DayClasses
                 if (dialPos == 0)
                 {
                     result++;
+                    //if (passes > 0)
+                    //{
+                    //    passes--;
+                    //}
                 }
+
                 result += passes;
             }
 
