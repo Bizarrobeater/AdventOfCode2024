@@ -178,6 +178,15 @@
     <None Update="InputFiles\Adv202401.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="InputFiles\Adv202502-2-01.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="InputFiles\Adv202502-1-01.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="InputFiles\Adv202502.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="InputFiles\Adv202501-2-01.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
