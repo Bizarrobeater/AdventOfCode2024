@@ -22,17 +22,17 @@ namespace AdventOfCodeApp
             //app.RunTest(1);
             //app.RunActual(1);
 
-            app.RunTest(2);
+            //app.RunTest(2);
             //app.RunActual(2);
             //Benchmark(app, 1, "milli");
             //Benchmark(app, 2, "milli");
-            //Benchmark(app, 2, "micro");
+            Benchmark(app, 2, "micro");
             //Console.ReadKey();
         }
 
         public static void Benchmark(AdventOfCode app, int question, string type = "milli")
         {
-            int runs = 1_00;
+            int runs = 1_000;
             List<long> timeTaken = new List<long>();
             Dictionary<long, int> resultAmounts = new Dictionary<long, int>();
             long time;

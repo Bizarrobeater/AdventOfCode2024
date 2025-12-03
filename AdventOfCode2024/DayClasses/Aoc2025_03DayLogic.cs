@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -74,40 +75,54 @@ namespace AdventOfCode2024.DayClasses
 
         public long FindHigest12NumberInRow(int?[] row)
         {
-            int lowestNumberIndex = 0;
-            int secondLowestNumberIndex = 0;
-            int thirdLowestNumberIndex = 0;
-
-            int? currValue = 0;
-
-            for (int i = row.Length - 1; i >= 0; i--)
-            {
-                currValue = row[i];
-                if (currValue <= row[lowestNumberIndex])
-                {
-                    thirdLowestNumberIndex = secondLowestNumberIndex;
-                    secondLowestNumberIndex = lowestNumberIndex;
-                    lowestNumberIndex = i;
-                }
-                else if (currValue <= row[secondLowestNumberIndex])
-                {
-                    thirdLowestNumberIndex = secondLowestNumberIndex;
-                    secondLowestNumberIndex = i;
-                }
-                else if (currValue <= row[thirdLowestNumberIndex])
-                {
-                    thirdLowestNumberIndex = i;
-                }
-            }
             long result = 0;
-            var count = 0;
-            for (int i = row.Length - 1; i >= 0; i--)
+
+            int removedDigits = 0;
+            int maxRemoveDigits = row.Length - 12;
+
+            int currValue = 0;
+
+            int digitCount = 11;
+
+            bool wasRemoved = false;
+
+            for (int i = 0; i < row.Length; i++)
             {
-                if (i == lowestNumberIndex || i == secondLowestNumberIndex || i == thirdLowestNumberIndex) continue;
-                result += (currValue ?? 0) * (long)Math.Pow(10, count);
-                count++;
-                if (count > 12) break;
+                wasRemoved = false;
+                if (digitCount < 0) break;
+                currValue = row[i] ?? -1;
+                if (currValue == -1) continue;
+                if (removedDigits >= maxRemoveDigits)
+                {
+                    result += currValue * (long)Math.Pow(10, digitCount);
+                    digitCount--;
+                    continue;
+                }
+                if (i == row.Length - 1)
+                {
+                    result += currValue;
+                    break;
+                }
+
+                for (int j = i + 1; j <= i + maxRemoveDigits - removedDigits && j < row.Length; j++)
+                {
+                    if (currValue < row[j])
+                    {
+                        removedDigits++;
+                        wasRemoved = true;
+                        break;
+                    }
+                }
+
+                if (wasRemoved)
+                {
+                    continue;
+                }
+                
+                result += currValue * (long)Math.Pow(10, digitCount);
+                digitCount--;
             }
+
             return result;
         }
     }
