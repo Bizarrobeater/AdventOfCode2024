@@ -14,7 +14,7 @@ namespace AdventOfCode2024.DayClasses
         public Dictionary<int, Dictionary<int, long>> ExpectedTestResults => new()
         {
             { 1, new() { { 1, 13 } } },
-            { 2, new() { { 1, 0 } } },
+            { 2, new() { { 1, 43 } } },
         };
 
         public long RunQuestion1(FileInfo file, bool isBenchmark = false)
@@ -67,7 +67,37 @@ namespace AdventOfCode2024.DayClasses
 
         public long RunQuestion2(FileInfo file, bool isBenchmark = false)
         {
-            throw new NotImplementedException();
+            var reader = new CharMultiArrayFileReader();
+            var content = reader.GetReadableFileContent(file, isBenchmark);
+
+            long result = 0;
+            long oldResult = -1;
+            char[,] updatedContent;
+            while (result != oldResult)
+            {
+                oldResult = result;
+                updatedContent = new char[content.GetLength(0), content.GetLength(1)];
+                for (int y = 0; y < content.GetLength(0); y++)
+                {
+                    for (int x = 0; x < content.GetLength(1); x++)
+                    {
+                        if (content[y, x] == '@' && IsAccessable(content, y, x, 3))
+                        {
+
+                            result++;
+                            updatedContent[y, x] = '.';
+                        }
+                        else
+                        {
+                            updatedContent[y, x] = content[y, x];
+                        }
+                    }
+                }
+                content = updatedContent;
+            }
+
+
+            return result;
         }
     }
 }
