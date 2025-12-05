@@ -14,7 +14,7 @@ namespace AdventOfCode2024.DayClasses
         public Dictionary<int, Dictionary<int, long>> ExpectedTestResults => new()
         {
             { 1, new() { { 1, 3 } } },
-            { 2, new() { { 1, 0 } } },
+            { 2, new() { { 1, 14 } } },
         };
 
         // 389 too low
@@ -65,6 +65,9 @@ namespace AdventOfCode2024.DayClasses
             return (ranges, ids);
         }
 
+        // 346.705.909.538.854 too high
+        // 346.705.909.538.758 too high
+        // 345.995.423.801.866
         public long RunQuestion2(FileInfo file, bool isBenchmark = false)
         {
             var reader = new CleanFileReader();
@@ -78,11 +81,12 @@ namespace AdventOfCode2024.DayClasses
                 long end = long.Parse(parts[1]);
                 rangeSorted.Add((start, end));
             }
-            rangeSorted = rangeSorted.OrderBy(r => r.start).ToList();
+            rangeSorted = rangeSorted.OrderBy(r => r.start).ThenBy(r => r.end).ToList();
             List<(long start, long end)> newRanges;
-            bool changed = false;
-            while (!changed)
+            bool changed = true;
+            while (changed)
             {
+                changed = false;
                 newRanges = new List<(long start, long end)>();
                 for (int i = 0; i < rangeSorted.Count; i++)
                 {
@@ -90,7 +94,19 @@ namespace AdventOfCode2024.DayClasses
                     if (i < rangeSorted.Count - 1)
                     {
                         var next = rangeSorted[i + 1];
-                        if (current.end >= next.start - 1)
+
+                        // current range wraps next range
+                        if (current.start <= next.start && current.end >= next.end)
+                        {
+                            i++;
+                            changed = true;
+                            newRanges.Add(current);
+                        }
+                        else if (current.start == next.start && current.end <= next.end)
+                        {
+                            changed = true;
+                        }
+                        else if (current.end >= next.start)
                         {
                             newRanges.Add((current.start, next.start - 1));
                             changed = true;
@@ -99,8 +115,22 @@ namespace AdventOfCode2024.DayClasses
                         {
                             newRanges.Add(current);
                         }
+                    }
+                    else
+                    {
+                        newRanges.Add(current);
+                    }
                 }
+                rangeSorted = newRanges;
             }
+
+            long result = 0;
+            foreach (var range in rangeSorted)
+            {
+                result += range.end - range.start + 1;
+            }
+            return result;
+
 
         }
     }
